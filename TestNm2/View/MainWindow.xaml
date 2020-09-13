@@ -1,0 +1,109 @@
+﻿<Window x:Class="TestNm2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodel="clr-namespace:TestNm2.ViewModel"
+        xmlns:local="clr-namespace:TestNm2"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="529.2" Width="1053.47">
+    <Window.Resources>
+        <viewmodel:ViewModel x:Key="vm"/>
+        <CollectionViewSource x:Key="ItemCollectionViewSource"  CollectionViewType="ListCollectionView"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <Binding Source="{StaticResource vm}"/>
+    </Window.DataContext>
+    <Grid>
+        <TextBlock
+            Text="Suivi des Non-Conformités Internes LOG"
+            HorizontalAlignment="Center" Margin="232,5,204.2,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="26" Width="611"/>
+        <DataGrid 
+            x:Name="dg"
+            ItemsSource="{Binding Source={StaticResource ItemCollectionViewSource}}" 
+            AutoGenerateColumns="False"
+            x:FieldModifier="public" 
+            HorizontalAlignment="Left" Height="316" Margin="10,117,0,0" VerticalAlignment="Top" Width="1027">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="30"/>
+                <DataGridTextColumn Header="Crée Le" Binding="{Binding DateCreaNCI, StringFormat=d}" Width="65"/>
+                <DataGridTextColumn Header="Crée Par" Binding="{Binding CreateurNCI}" Width="60"/>
+                <DataGridTextColumn Header="Zone" Binding="{Binding Zone}" Width="125"/>
+                <DataGridTextColumn Header="Titre NCI" Binding="{Binding TitreNCI}" Width="*"/>
+                <DataGridTextColumn Header="Termine" Binding="{Binding Termine}" Width="50"/>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="Action"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button 
+                                    x:Name="updatebtn" 
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.UpdateNCCommand}"
+                                    CommandParameter="{Binding}">
+                                    <Image Source="/TestNm2;component/Resources/1385_Disable_16x16_72_disabled.png"/>
+                                </Button>
+                                <Button 
+                                    x:Name="deletebtn"
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.DeleteNCCommand}"
+                                    CommandParameter="{Binding}">
+                                    <Image Source="/TestNm2;component/Resources/1385_Disable_16x16_72.png"/>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBlock 
+            Text="Createur"
+            HorizontalAlignment="Left" Margin="320,50,0,428" TextWrapping="Wrap" FontSize="13.333"/>
+        <TextBlock 
+            Text="Zone"
+            HorizontalAlignment="Left" Margin="10,50,0,428" TextWrapping="Wrap" FontSize="13.333"/>
+        <CheckBox
+            x:Name="CkbTermine"
+            Content="Masquer les terminés"
+            IsChecked="{Binding ckbTermine, Mode=TwoWay}"
+            HorizontalAlignment="Left" Margin="566,82,0,0" VerticalAlignment="Top"/>
+        <CheckBox 
+            x:Name="CkbMesNC"
+            Content="Voir mes NCI"
+            IsChecked="{Binding ckbMesNC}"
+            HorizontalAlignment="Left" Margin="566,61,0,0" VerticalAlignment="Top"/>
+        <ComboBox
+            ItemsSource="{Binding Path=Zones}"
+            SelectedItem="{Binding Path=SelectedZone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            HorizontalAlignment="Left" Height="30" Margin="10,72,0,0" VerticalAlignment="Top" Width="193"/>
+        <Button 
+            Command="{Binding RemoveZoneFilterCommand, Mode=OneWay}"
+            HorizontalAlignment="Left" Margin="215,72,0,398" Width="16" Height="16">
+            <Image
+                Style="{DynamicResource ImageStyleForButtons}"
+                Width="10" Height="10"/>
+        </Button>
+        <ComboBox 
+            ItemsSource="{Binding Path=Createurs}"
+            SelectedItem="{Binding Path=SelectedMesNC, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            HorizontalAlignment="Left" Height="30" Margin="320,72,0,0" VerticalAlignment="Top" Width="143"/>
+        <Button
+            Command="{Binding RemoveMesNCFilterCommand, Mode=OneWay}"
+            HorizontalAlignment="Left" Margin="475,72,0,398">
+            <Image
+                Style="{DynamicResource ImageStyleForButtons}"
+                Width="10" Height="10"/>
+        </Button>
+        <Button 
+            x:Name="btnReset"
+            Content="Enlever tous les filtres" 
+            Command="{Binding ResetFiltersCommand, Mode=OneWay}"
+            HorizontalAlignment="Left" Margin="811,0,0,397" Width="175" VerticalAlignment="Bottom"/>
+        <Button 
+            x:Name="btnInserer" 
+            Content="Créer une &#xD;&#xA;nouvelle NCI" 
+            HorizontalAlignment="Left" Margin="543,441,0,0" VerticalAlignment="Top" Width="143" Height="49"/>
+    </Grid>
+</Window>
